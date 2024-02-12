@@ -3,7 +3,7 @@ using namespace std;
 
 int expbin(int base, int exp) {
     if (!exp) return 1;
-    else if (exp & 1) return base * expbin(base, exp - 1);
+    if (exp & 1) return base * expbin(base, exp - 1);
     int result = expbin(base, exp >> 1);
     return result * result;
 }

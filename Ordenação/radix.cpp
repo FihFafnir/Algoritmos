@@ -1,37 +1,46 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+template <size_t S>
+void printArr(int (&arr)[S]) {
+    cout << "[" << arr[0];
+    for (int i = 1; i < S; i++)
+        cout << ", " << arr[i];
+    cout << "]" << endl;
+}
+
 int expbin(int number, int exp) {
     if (!exp)
         return 1;
     if (exp & 1)
         return expbin(number, exp - 1) * number;
-    int result = expbin(number, exp/2);
+    int result = expbin(number, exp >> 1);
     return result * result;
 }
 
 int getDigit(int number, int pos) {
     return number/expbin(10, pos - 1) % 10;
-} 
+}
 
-void radixSortA(int arr[], int length) {
+template <size_t S>
+void radixSortA(int (&arr)[S]) {
     int 
-        digits[10][length], 
+        digits[10][S],
         lengths[10], 
-        digit, i , j, d = 0;
+        digit, i , j, currentPos = 0;
     bool end = false;
     memset(lengths, 0, sizeof(lengths));
 
-    while (d++, !end) {
-        for (i = 0; i < length; i++) {
-            digit = getDigit(arr[i], d);
+    while (currentPos++, !end) {
+        for (i = 0; i < S; i++) {
+            digit = getDigit(arr[i], currentPos);
             digits[digit][lengths[digit]++] = arr[i];
         }
 
-        end = lengths[0] != length;
+        end = lengths[0] != S;
 
         i = j = 0;
-        while (i < length) {
+        while (i < S) {
             while (lengths[j]--) 
                 arr[i++] = digits[j][lengths[j]];
             j++;
@@ -39,47 +48,12 @@ void radixSortA(int arr[], int length) {
     }
 }
 
-void radixSortB(int arr[], int length) {
-    int 
-        newArr[length],
-        pos[10],
-        lengths[10], 
-        digit, i, j, d = 0;
-    bool end = false;
-
-    while (d++, !end) {
-        memset(pos, 0, sizeof(pos));
-        memset(lengths, 0, sizeof(lengths));
-        
-        for (i = 0; i < length; i++) {
-            digit = getDigit(arr[i], d);
-            for (j = digit; j < 10; j++)
-                pos[j]++;
-        }
-
-
-        for (i = 0; i < length; i++) {
-            digit = getDigit(arr[i], d);
-            newArr[(digit ? pos[digit-1] : 0) + lengths[digit]++] = arr[i];
-        }
-
-        end = true;
-        for (i = 0; i < length; i++)
-            if (arr[i] != newArr[i]) {
-                arr[i] = newArr[i];
-                end = false;
-            }
-    }
-}
-
 int main(int argc, char** argv) {
-    int arr[] = {2, 3, 5, 4, 6, 1, 0, 7, 8, 9};
-    for (int i = 0; i < 10; i++)
-        printf("%d, ", arr[i]);
-    printf("\n");
-    radixSortB(arr, 10);
-    for (int i = 0; i < 10; i++)
-        printf("%d, ", arr[i]);
-    printf("\n");
+    int array[] = {3, 2, 1, 4, 6, 8, 5};
+
+    printArr(array);
+    radixSortA(array);
+    printArr(array);
+
     return 0;
 }
