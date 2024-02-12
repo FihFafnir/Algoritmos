@@ -1,10 +1,13 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-void swap(int *a, int *b) {
-    *a ^= *b;
-    *b ^= *a;
-    *a ^= *b;
+void swap(int& first, int& second) {
+    if (first == second)
+        return;
+        
+    first ^= second;
+    second ^= first;
+    first ^= second;
 }
 
 int main(int argc, char** argv) {
