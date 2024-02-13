@@ -19,32 +19,38 @@ int expbin(int number, int exp) {
 }
 
 int getDigit(int number, int pos) {
-    return number/expbin(10, pos - 1) % 10;
+    return (number/expbin(10, pos)) % 10;
+}
+
+int getNumberOfDigits(int number) {
+    int numberOfDigits;
+    for (numberOfDigits = 0; number % 10; numberOfDigits++)
+        number /= 10;
+    return numberOfDigits;
 }
 
 template <size_t S>
-void radixSortA(int (&arr)[S]) {
-    int 
-        digits[10][S],
-        lengths[10], 
-        digit, i , j, currentPos = 0;
-    bool end = false;
+void radixSort(int (&arr)[S]) {
+    int digits[10][S], lengths[10];
+    int currentDigit, digit, i , j;
+
     memset(lengths, 0, sizeof(lengths));
 
-    while (currentPos++, !end) {
+    int maxValue = arr[0];
+    for (i = 1; i < S; i++)
+        if (maxValue < arr[i])
+            maxValue = arr[i];
+
+    int maxNumberOfDigits = getNumberOfDigits(maxValue);
+    for (currentDigit = 0; maxNumberOfDigits--; currentDigit++) {
         for (i = 0; i < S; i++) {
-            digit = getDigit(arr[i], currentPos);
+            digit = getDigit(arr[i], currentDigit);
             digits[digit][lengths[digit]++] = arr[i];
         }
 
-        end = lengths[0] != S;
-
-        i = j = 0;
-        while (i < S) {
+        for (i = j = 0; i < S; j++)
             while (lengths[j]--) 
                 arr[i++] = digits[j][lengths[j]];
-            j++;
-        }
     }
 }
 
@@ -52,7 +58,7 @@ int main(int argc, char** argv) {
     int array[] = {3, 2, 1, 4, 6, 8, 5};
 
     printArr(array);
-    radixSortA(array);
+    radixSort(array);
     printArr(array);
 
     return 0;
