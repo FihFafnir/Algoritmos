@@ -40,18 +40,14 @@ template <typename T, size_t S>
 T& Array<T, S>::operator[](size_t index) {
     if (index < S)
         return m_data[index];
-    
-    cout << "Invalid index" << endl;
-    exit(0);
+    throw runtime_error("Invalid index access.");
 }
 
 template <typename T, size_t S>
 T& Array<T, S>::at(size_t index) {
     if (index < S)
         return m_data[index];
-    
-    cout << "Invalid index" << endl;
-    exit(0);
+    throw runtime_error("Invalid index access.");    
 }
 
 template <typename T, size_t S>
@@ -76,8 +72,5 @@ void Array<T, S>::swap(size_t index, size_t anotherIndex) {
         T tmp = m_data[index];
         m_data[index] = m_data[anotherIndex];
         m_data[anotherIndex] = tmp;
-    } else {
-        cout << "Invalid index" << endl;
-        exit(0);
-    }
+    } else throw runtime_error("Invalid index access.");    
 }

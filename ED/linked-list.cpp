@@ -73,26 +73,30 @@ LinkedListElement<T>* LinkedList<T>::end() {
 }
 
 template <typename T>
-LinkedListElement<T>* LinkedList<T>::locate(size_t index) {
-    LinkedListElement<T>* currentElement;
-    size_t length = size(), count;
+LinkedListElement<T>* LinkedList<T>::locate(size_t index, size_t beginningIndex, LinkedListElement<T>* ptr) {
+    LinkedListElement<T>* currentElement = ptr;
+    size_t count = beginningIndex;
 
-    if (index >= length)
-        return nullptr;
-
-    if (index < length>>2) {
-        count = 0;
-        currentElement = m_head->next;
+    if (count < index) 
         while (count++ != index)
             currentElement = currentElement->next;
-    } else {
-        count = length - 1;
-        currentElement = m_head->previous;
-        while (count-- != index)
+    else while (count-- != index)
             currentElement = currentElement->previous;
-    }
 
     return currentElement;
+}
+
+template <typename T>
+LinkedListElement<T>* LinkedList<T>::locate(size_t index) {
+    LinkedListElement<T>* currentElement;
+    size_t length = size();
+
+    if (index >= length)
+        throw runtime_error("Invalid index locate.");
+
+    return index < (length>>1) ? 
+        locate(index, 0, m_head->next) : 
+        locate(index, length - 1, m_head->previous);
 }
 
 template <typename T>
@@ -107,22 +111,12 @@ T& LinkedList<T>::back() {
 
 template <typename T>
 T& LinkedList<T>::at(size_t index) {
-    LinkedListElement<T>* currentElement = locate(index);
-    if (currentElement != nullptr)
-        return currentElement->value;
-
-    cout << "Invalid index" << endl;
-    exit(0);
+    return locate(index)->value;
 }
 
 template <typename T>
 T& LinkedList<T>::operator[](size_t index) {
-    LinkedListElement<T>* currentElement = locate(index);
-    if (currentElement != nullptr)
-        return currentElement->value;
-
-    cout << "Invalid index" << endl;
-    exit(0);
+    return locate(index)->value;
 }
 
 template <typename T>
@@ -138,11 +132,7 @@ void LinkedList<T>::push_back(T value) {
 template <typename T>
 void LinkedList<T>::insert(size_t index, T value) {
     LinkedListElement<T>* currentElement = locate(index);
-    if (currentElement != nullptr) 
-        new LinkedListElement<T>(value, currentElement->previous, currentElement);
-
-    cout << "Invalid index" << endl;
-    exit(0);
+    new LinkedListElement<T>(value, currentElement->previous, currentElement);
 }
 
 template <typename T>
@@ -157,18 +147,21 @@ T LinkedList<T>::remove(LinkedListElement<T>* ptr) {
 
 template <typename T>
 T LinkedList<T>::remove(size_t index) {
-    LinkedListElement<T>* currentElement = locate(index);
-    return currentElement == nullptr ? NULL : remove(currentElement); 
+    return remove(locate(index)); 
 }
 
 template <typename T>
 T LinkedList<T>::pop_front() {
-    return isEmpty() ? NULL : remove(m_head->next);
+    if (isEmpty())
+        throw runtime_error("Invalid index remove.");
+    return remove(m_head->next);
 }
 
 template <typename T>
 T LinkedList<T>::pop_back() {
-    return isEmpty() ? NULL : remove(m_head->previous);
+    if (isEmpty())
+        throw runtime_error("Invalid index remove.");
+    return remove(m_head->previous);
 }
 
 template<typename T>
@@ -180,16 +173,12 @@ void LinkedList<T>::swap(size_t index, size_t anotherIndex) {
     }
 
     LinkedListElement<T>* firstElement = locate(index);
-    LinkedListElement<T>* currentElement = firstElement;
-    size_t count = index;
+    LinkedListElement<T>* secondElement = locate(anotherIndex, index, firstElement);
     T tmp;
     
-    while (count++ != anotherIndex)
-        currentElement = currentElement->next;
-
     tmp = firstElement->value;
-    firstElement->value = currentElement->value;
-    currentElement->value = tmp;
+    firstElement->value = secondElement->value;
+    secondElement->value = tmp;
 }
 
 template <typename T>
@@ -213,12 +202,10 @@ void LinkedList<T*>::clear() {
 
 template <typename T>
 size_t LinkedList<T*>::size() {
-    LinkedListElement<T*>* currentElement = m_head;
+    LinkedListElement<T*>* currentElement = m_head; 
     size_t count = 0;
-
     while (currentElement = currentElement->next, currentElement != m_head)
         count++;
-    
     return count;
 }
 
@@ -233,26 +220,30 @@ LinkedListElement<T*>* LinkedList<T*>::end() {
 }
 
 template <typename T>
-LinkedListElement<T*>* LinkedList<T*>::locate(size_t index) {
-    LinkedListElement<T*>* currentElement;
-    size_t length = size(), count;
+LinkedListElement<T*>* LinkedList<T*>::locate(size_t index, size_t beginningIndex, LinkedListElement<T*>* ptr) {
+    LinkedListElement<T*>* currentElement = ptr;
+    size_t count = beginningIndex;
 
-    if (index >= length)
-        return nullptr;
-
-    if (index < length>>2) {
-        count = 0;
-        currentElement = m_head->next;
+    if (count < index) 
         while (count++ != index)
             currentElement = currentElement->next;
-    } else {
-        count = length - 1;
-        currentElement = m_head->previous;
-        while (count-- != index)
+    else while (count-- != index)
             currentElement = currentElement->previous;
-    }
 
     return currentElement;
+}
+
+template <typename T>
+LinkedListElement<T*>* LinkedList<T*>::locate(size_t index) {
+    LinkedListElement<T*>* currentElement;
+    size_t length = size();
+
+    if (index >= length)
+        throw runtime_error("Invalid index locate.");
+
+    return index < (length>>1) ? 
+        locate(index, 0, m_head->next) : 
+        locate(index, length - 1, m_head->previous);
 }
 
 template <typename T>
@@ -267,22 +258,12 @@ T& LinkedList<T*>::back() {
 
 template <typename T>
 T& LinkedList<T*>::at(size_t index) {
-    LinkedListElement<T*>* currentElement = locate(index);
-    if (currentElement != nullptr)
-        return currentElement->value;
-
-    cout << "Invalid index" << endl;
-    exit(0);
+    return locate(index)->value;
 }
 
 template <typename T>
 T& LinkedList<T*>::operator[](size_t index) {
-    LinkedListElement<T*>* currentElement = locate(index);
-    if (currentElement != nullptr)
-        return currentElement->value;
-
-    cout << "Invalid index" << endl;
-    exit(0);
+    return locate(index)->value;
 }
 
 template <typename T>
@@ -298,11 +279,7 @@ void LinkedList<T*>::push_back(T* value) {
 template <typename T>
 void LinkedList<T*>::insert(size_t index, T* value) {
     LinkedListElement<T*>* currentElement = locate(index);
-    if (currentElement != nullptr) 
-        new LinkedListElement<T*>(value, currentElement->previous, currentElement);
-
-    cout << "Invalid index" << endl;
-    exit(0);
+    new LinkedListElement<T*>(value, currentElement->previous, currentElement);
 }
 
 template <typename T>
@@ -317,18 +294,21 @@ T* LinkedList<T*>::remove(LinkedListElement<T*>* ptr) {
 
 template <typename T>
 T* LinkedList<T*>::remove(size_t index) {
-    LinkedListElement<T*>* currentElement = locate(index);
-    return currentElement == nullptr ? NULL : remove(currentElement); 
+    return remove(locate(index)); 
 }
 
 template <typename T>
 T* LinkedList<T*>::pop_front() {
-    return isEmpty() ? NULL : remove(m_head->next);
+    if (isEmpty())
+        throw runtime_error("Removing element from an empty linked list.");
+    return remove(m_head->next);
 }
 
 template <typename T>
 T* LinkedList<T*>::pop_back() {
-    return isEmpty() ? NULL : remove(m_head->previous);
+    if (isEmpty())
+        throw runtime_error("Removing element from an empty linked list.");
+    return remove(m_head->previous);
 }
 
 template<typename T>
@@ -340,18 +320,10 @@ void LinkedList<T*>::swap(size_t index, size_t anotherIndex) {
     }
 
     LinkedListElement<T*>* firstElement = locate(index);
-    LinkedListElement<T*>* currentElement = firstElement;
-    size_t count = index;
-    T* tmp;
+    LinkedListElement<T*>* secondElement = locate(anotherIndex, index, firstElement);
+    T tmp;
     
-    while (count++ != anotherIndex)
-        currentElement = currentElement->next;
-
-    // firstElement->value ^= currentElement->value;
-    // currentElement->value ^= firstElement->value;
-    // firstElement->value ^= currentElement->value;
-
     tmp = firstElement->value;
-    firstElement->value = currentElement->value;
-    currentElement->value = tmp;
+    firstElement->value = secondElement->value;
+    secondElement->value = tmp;
 }

@@ -22,7 +22,7 @@ class Queue {
         Queue();
         ~Queue();
         bool isEmpty();
-        uint size();
+        size_t size();
         T front();
         T back();
         void push(T element);

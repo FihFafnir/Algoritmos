@@ -33,6 +33,7 @@ class LinkedList {
     LinkedListElement<T>* begin();
     LinkedListElement<T>* end();
     LinkedListElement<T>* locate(size_t index);
+    LinkedListElement<T>* locate(size_t index, size_t beginningIndex, LinkedListElement<T>* ptr);
 
     T remove(LinkedListElement<T>* ptr);
 
@@ -71,6 +72,7 @@ class LinkedList<T*> {
     LinkedListElement<T*>* begin();
     LinkedListElement<T*>* end();
     LinkedListElement<T*>* locate(size_t index);
+    LinkedListElement<T*>* locate(size_t index, size_t beginningIndex, LinkedListElement<T*>* ptr);
 
     T* remove(LinkedListElement<T*>* ptr);
 

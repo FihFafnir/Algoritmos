@@ -1,5 +1,4 @@
 #pragma once
-
 #include <bits/stdc++.h>
 
 #define INITIAL_SIZE 10
@@ -7,7 +6,7 @@
 
 using namespace std;
 
-template <typename T>
+template <typename T, size_t S = INITIAL_SIZE>
 class Vector {
     T* m_array;
     size_t m_size;
@@ -24,9 +23,9 @@ class Vector {
         bool is_empty();
 
         T& operator[] (size_t index);
-        T at(size_t index);
-        T front();
-        T back();
+        T& at(size_t index);
+        T& front();
+        T& back();
         T* data();
         void swap(size_t index, size_t anotherIndex);
         void insert(size_t index, T element);

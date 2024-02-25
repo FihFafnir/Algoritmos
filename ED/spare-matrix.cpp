@@ -18,9 +18,8 @@ void SpareMatrix<T, R, C>::insert(size_t row, size_t column, T element) {
 template <typename T, size_t R, size_t C>
 T& SpareMatrix<T, R, C>::operator[](size_t row) {
     if (row < R)
-        return m_data[row];    
-    cout << "Invalid index" << endl;
-    exit(0);
+        return m_data[row];
+    throw runtime_error("Invalid index access.");
 }
 
 template <typename T, size_t R, size_t C>
@@ -29,9 +28,7 @@ T& SpareMatrix<T, R, C>::at(size_t row, size_t column) {
     for (int i = 0; i < size; i++)
         if (m_data[row][i].column == column)
             return m_data[row][i].value;
-    
-    cout << "Invalid index" << endl;
-    exit(0);
+    throw runtime_error("Invalid index access.");    
 }
 
 template <typename T, size_t R, size_t C>
@@ -46,7 +43,7 @@ bool SpareMatrix<T, R, C>::isValid(size_t row, size_t column) {
 template <typename T, size_t R, size_t C>
 T SpareMatrix<T, R, C>::remove(size_t row, size_t column) {
     if (!isValid(row, column))
-        return NULL;
+        throw runtime_error("Invalid index remove.");    
 
     size_t size = m_data[row].size();
     for (int i = 0; i < size; i++)

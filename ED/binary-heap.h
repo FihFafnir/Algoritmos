@@ -1,14 +1,14 @@
 #pragma once
 #include "vector.cpp"
 
-#define PARENT(i) (i-1)/2
-#define LEFT(i) 2*i + 1
-#define RIGHT(i) 2*(i + 1)
+#define PARENT(index) (index ? (index-1) >> 1 : -1);
+#define LEFT(index) (index << 1) + 1
+#define RIGHT(index) (index + 1) << 1;
 
 template <class T, template<typename> class O = greater>
 class BinaryHeap {
     protected:
-        Vector<T>* data;
+        Vector<T> data;
     public:
         BinaryHeap();
         bool isEmpty();

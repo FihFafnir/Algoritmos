@@ -17,13 +17,16 @@ struct DequeElement {
 
 template<typename T>
 class Deque {
-    DequeElement<T>* head;
+    DequeElement<T>* m_head;
+
+    DequeElement<T>* locate(size_t index);
+    DequeElement<T>* locate(size_t index, size_t beginningIndex, DequeElement<T>* ptr);
     public:
         Deque();
         ~Deque();
 
         bool isEmpty();
-        uint size();
+        size_t size();
 
         DequeElement<T>* begin();
         DequeElement<T>* end();

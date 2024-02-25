@@ -17,7 +17,7 @@ DequeElement<T>::DequeElement(T value, DequeElement<T>* previous, DequeElement<T
 }
 
 template<typename T>
-Deque<T>::Deque() : head(new DequeElement<T>()) {}
+Deque<T>::Deque() : m_head(new DequeElement<T>()) {}
 
 template<typename T>
 Deque<T>::~Deque() {
@@ -26,58 +26,73 @@ Deque<T>::~Deque() {
 
 template<typename T>
 bool Deque<T>::isEmpty() {
-    return head->next == head;
+    return m_head->next == m_head;
 }
 
 template<typename T>
-uint Deque<T>::size() {
-    DequeElement<T>* currentElement = head;
-    uint count = 0;
-    while (currentElement = currentElement->next, currentElement != head)
+size_t Deque<T>::size() {
+    DequeElement<T>* currentElement = m_head;
+    size_t count = 0;
+    while (currentElement = currentElement->next, currentElement != m_head)
         count++;
     return count;
 }
 
+template <typename T>
+DequeElement<T>* Deque<T>::locate(size_t index, size_t beginningIndex, DequeElement<T>* ptr) {
+    DequeElement<T>* currentElement = ptr;
+    size_t count = beginningIndex;
+
+    if (count < index) 
+        while (count++ != index)
+            currentElement = currentElement->next;
+    else while (count-- != index)
+            currentElement = currentElement->previous;
+
+    return currentElement;
+}
+
+template <typename T>
+DequeElement<T>* Deque<T>::locate(size_t index) {
+    DequeElement<T>* currentElement;
+    size_t length = size();
+
+    if (index >= length)
+        throw runtime_error("Invalid index locate.");
+
+    return index < (length>>1) ? 
+        locate(index, 0, m_head->next) : 
+        locate(index, length - 1, m_head->previous);
+}
+
 template<typename T>
 DequeElement<T>* Deque<T>::begin() {
-    return head->next;
+    return m_head->next;
 }
 
 template<typename T>
 DequeElement<T>* Deque<T>::end() {
-    return head->previous;
+    return m_head->previous;
 }
 
 template<typename T>
 T& Deque<T>::front() {
-    return head->next->value;
+    return m_head->next->value;
 }
 
 template<typename T>
 T& Deque<T>::back() {
-    return head->previous->value;
+    return m_head->previous->value;
 }
 
 template<typename T>
 T& Deque<T>::at(size_t index) {
-    DequeElement<T>* currentElement = head;
-    size_t count = 0;
-
-    while (currentElement = currentElement->next, count != index) 
-        count++;
-
-    return currentElement->value;
+    return locate(index)->value;
 }
 
 template<typename T>
 T& Deque<T>::operator[](size_t index) {
-    DequeElement<T>* currentElement = head;
-    size_t count = 0;
-
-    while (currentElement = currentElement->next, count != index) 
-        count++;
-
-    return currentElement->value;
+    return locate(index)->value;
 }
 
 template<typename T>
@@ -85,23 +100,18 @@ void Deque<T>::insert(size_t index, T element) {
     if (index >= size())
         push_back(element);
 
-    DequeElement<T>* currentElement = head->next;
-    size_t count = 0;
-
-    while (count++ != index)
-        currentElement = currentElement->next
-
+    DequeElement<T>* currentElement = locate(index);
     new DequeElement<T>(element, currentElement->previous, currentElement);
 }
 
 template<typename T>
 void Deque<T>::push_back(T element) {
-    new DequeElement<T>(element, head->previous, head);
+    new DequeElement<T>(element, m_head->previous, m_head);
 }
 
 template<typename T>
 void Deque<T>::push_front(T element) {
-    new DequeElement<T>(element, head, head->next);
+    new DequeElement<T>(element, m_head, m_head->next);
 }
 
 template<typename T>
@@ -116,35 +126,21 @@ T Deque<T>::remove(DequeElement<T>* ptr) {
 
 template<typename T>
 T Deque<T>::remove(size_t index) {
-    if (isEmpty())
-        return NULL;
-
-    DequeElement<T>* currentElement;
-    size_t length = size(), count;
-
-    if (index < length>>2) {
-        count = 0;
-        currentElement = head->next;
-        while (count++ != index)
-            currentElement = currentElement->next;
-    } else {
-        count = length - 1;
-        currentElement = head->previous;
-        while (count-- != index)
-            currentElement = currentElement->previous;
-    }
-
-    return remove(currentElement);
+    return remove(locate(index));
 }
 
 template<typename T>
 T Deque<T>::pop_back() {
-    return isEmpty() ? NULL : remove(head->previous);
+    if (isEmpty())
+        throw runtime_error("Removing element from an empty deque.");
+    return remove(m_head->previous);
 }
 
 template<typename T>
 T Deque<T>::pop_front() {
-    return isEmpty() ? NULL : remove(head->next);
+    if (isEmpty())
+        throw runtime_error("Removing element from an empty deque.");
+    return remove(m_head->next);
 }
 
 template<typename T>
@@ -161,20 +157,11 @@ void Deque<T>::swap(size_t index, size_t anotherIndex) {
         index ^= anotherIndex;
     }
 
-    DequeElement<T>* currentElement = head->next;
-    DequeElement<T>* firstElement;
-    size_t count = 0;
+    DequeElement<T>* firstElement = locate(index);
+    DequeElement<T>* secondElement = locate(anotherIndex, index, firstElement);
     T tmp;
-
-    while (count++ != index)
-        currentElement = currentElement->next 
-
-    firstElement = currentElement;
     
-    while (count++ != anotherIndex)
-        currentElement = currentElement->next;
-
     tmp = firstElement->value;
-    firstElement->value = currentElement->value;
-    currentElement->value = tmp;
+    firstElement->value = secondElement->value;
+    secondElement->value = tmp;
 }

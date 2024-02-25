@@ -1,8 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-template <size_t S>
-void printArr(int (&arr)[S]) {
+template <size_t S> void printArr(int (&arr)[S]) {
     cout << "[" << arr[0];
     for (int i = 1; i < S; i++)
         cout << ", " << arr[i];
@@ -18,9 +17,7 @@ int expbin(int number, int exp) {
     return result * result;
 }
 
-int getDigit(int number, int pos) {
-    return (number/expbin(10, pos)) % 10;
-}
+int getDigit(int number, int pos) { return (number / expbin(10, pos)) % 10; }
 
 int getNumberOfDigits(int number) {
     int numberOfDigits;
@@ -29,34 +26,38 @@ int getNumberOfDigits(int number) {
     return numberOfDigits;
 }
 
-template <size_t S>
-void radixSort(int (&arr)[S]) {
-    int digits[10][S], lengths[10];
-    int currentDigit, digit, i , j;
-
-    memset(lengths, 0, sizeof(lengths));
-
+template <size_t S> int getMaxValue(int (&arr)[S]) {
     int maxValue = arr[0];
-    for (i = 1; i < S; i++)
+    for (int i = 1; i < S; i++)
         if (maxValue < arr[i])
             maxValue = arr[i];
+    return maxValue;
+}
 
-    int maxNumberOfDigits = getNumberOfDigits(maxValue);
-    for (currentDigit = 0; maxNumberOfDigits--; currentDigit++) {
+template <size_t S> void radixSort(int (&arr)[S]) {
+    int digits[10][S], lengths[10];
+    int currentDigit, digit, i, j;
+
+    int maxNumberOfDigits = getNumberOfDigits(getMaxValue(arr));
+    for (currentDigit = 0; currentDigit < maxNumberOfDigits; currentDigit++) {
+        memset(lengths, 0, sizeof(lengths));
+
         for (i = 0; i < S; i++) {
             digit = getDigit(arr[i], currentDigit);
             digits[digit][lengths[digit]++] = arr[i];
         }
 
-        for (i = j = 0; i < S; j++)
-            while (lengths[j]--) 
-                arr[i++] = digits[j][lengths[j]];
+        for (i = digit = 0; digit < 10; digit++)
+            for (j = 0; j < lengths[digit]; j++)
+                arr[i++] = digits[digit][j];
     }
 }
 
-int main(int argc, char** argv) {
-    int array[] = {3, 2, 1, 4, 6, 8, 5};
-
+int main(int argc, char **argv) {
+    int array[] = {31199, 11851, 23234, 14616, 28686, 7608, 973,   4167,
+                   19163, 26242, 12435, 2685,  17835, 580,  32541, 6169,
+                   26689, 2403,  2138,  24275, 12802, 659,  2224,  19543,
+                   1817,  28323, 13765, 22411, 31590, 26687};
     printArr(array);
     radixSort(array);
     printArr(array);

@@ -11,7 +11,7 @@ HashSet<K, S>::HashSet() {}
 
 template <typename K, size_t S>
 size_t HashSet<K, S>::hash(K key) {
-    return ((5381 << 5) + 5381 + key) % S;
+    return ((HASH_CODE << 5) + HASH_CODE + key) % S;
 }
 
 template <typename K, size_t S>

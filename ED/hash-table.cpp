@@ -67,7 +67,9 @@ LinkedListElement<HashTableElement<K, V>*>* HashTable<K, V, S>::locate(K key) {
 template <typename K, typename V, size_t S> 
 V HashTable<K, V, S>::remove(K key) {
     LinkedListElement<HashTableElement<K, V>*>* iterator = locate(key);
-    return iterator == nullptr ? NULL : m_data[hash(key)].remove(iterator)->value;
+    if (iterator == nullptr)
+        throw runtime_error("Invalid key remove.");
+    return m_data[hash(key)].remove(iterator)->value;
 }
 
 template <typename K, typename V, size_t S>
@@ -80,8 +82,7 @@ V& HashTable<K, V, S>::at(K key) {
     LinkedListElement<HashTableElement<K, V>*>* iterator = locate(key);
     if (iterator != nullptr)
         return iterator->value->value;
-    cout << "Invalid key" << endl;
-    exit(0);
+    throw runtime_error("Invalid key access.");
 }
 
 template <typename K, typename V, size_t S>
@@ -89,6 +90,5 @@ V& HashTable<K, V, S>::operator[](K key) {
     LinkedListElement<HashTableElement<K, V>*>* iterator = locate(key);
     if (iterator != nullptr)
         return iterator->value->value;
-    cout << "Invalid key" << endl;
-    exit(0);
+    throw runtime_error("Invalid key access.");
 }

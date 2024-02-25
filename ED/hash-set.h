@@ -1,6 +1,7 @@
 #pragma once
 #include <bits/stdc++.h>
 #include "linked-list.cpp"
+#define HASH_CODE 5381
 
 using namespace std;
 

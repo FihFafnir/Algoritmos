@@ -32,9 +32,9 @@ bool Queue<T>::isEmpty() {
 }
 
 template<typename T>
-uint Queue<T>::size() {
+size_t Queue<T>::size() {
     QueueElement<T>* currentElement = head;
-    uint count = 0;
+    size_t count = 0;
     while (currentElement = currentElement->next, currentElement != head)
         count++;
     return count;
@@ -58,7 +58,7 @@ void Queue<T>::push(T element) {
 template<typename T>
 T Queue<T>::pop() {
     if (isEmpty())
-        return NULL;
+        throw runtime_error("Removing element from an empty queue.");
 
     QueueElement<T>* removedElement = head->previous;
     T removedElementValue = removedElement->value;
